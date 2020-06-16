@@ -5,7 +5,7 @@ const spawn = require('child_process').spawn;
 
 const host = '0.0.0.0';
 const port = 9083;
-const secret = '80969bf9-8550-41d0-aee2-8a98770a761d'; // Secret key of the webhook
+const secret = 'secret'; // Secret key of the webhook
 
 // Create express app
 const app = express();
