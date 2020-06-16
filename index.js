@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const githubWebhook = require('express-github-webhook');
-const spawn = require('child_process').spawn;
+const { spawn } = require('child_process');
 
 const host = '0.0.0.0';
 const port = 9083;
@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 
 webhookHandler.on('*', (event, repo, data) => {
 	
+	const path = '/home/user/path/';
 	let deploy;
 
 	// strapi-franchise
@@ -32,13 +33,13 @@ webhookHandler.on('*', (event, repo, data) => {
 		// Branch master
 		if (data.ref == 'refs/heads/master') {
 			console.log(`[${repo}] Deploy branch master`);
-			deploy = spawn('sh', ['be.sh', 'master', 'sandbox']);
+			deploy = spawn('sh', [path + 'be.sh', 'master', 'sandbox']);
 		}
 
 		// Branch production
 		if (data.ref == 'refs/heads/production') {
 			console.log(`[${repo}] Deploy branch production`);
-			deploy = spawn('sh', ['be.sh', 'production', 'app']);
+			deploy = spawn('sh', [path + 'be.sh', 'production', 'app']);
 		}
 	}
 
@@ -49,19 +50,27 @@ webhookHandler.on('*', (event, repo, data) => {
 		// Branch dev
 		if (data.ref == 'refs/heads/dev') {
 			console.log(`[${repo}] Deploy branch dev`);
-			deploy = spawn('sh', ['fe.sh', 'dev', 'dev']);
+			deploy = spawn('sh', [path + 'fe.sh', 'dev', 'dev']);
 		}
 
 		// Branch production
 		if (data.ref == 'refs/heads/production') {
 			console.log(`[${repo}] Deploy branch production`);
-			deploy = spawn('sh', ['fe.sh', 'production', 'my']);
+			deploy = spawn('sh', [path + 'fe.sh', 'production', 'my']);
 		}
 	}
 
 	deploy.stdout.on('data', data => {
 		const buff = new Buffer(data);
-		console.log(buff.toString('utf-8'));
+		console.log('[STDOUT]', buff.toString('utf-8'));
+	});
+
+	deploy.stderr.on('data', data => {
+		console.log('[STDERR]', data);
+	});
+
+	deploy.on('close', data => {
+		console.log('[CLOSE]', data);
 	});
 
 	console.log(`[${repo}] Done`);
