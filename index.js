@@ -33,13 +33,13 @@ webhookHandler.on('*', (event, repo, data) => {
 		// Branch master
 		if (data.ref == 'refs/heads/master') {
 			console.log(`[${repo}] Deploy branch master`);
-			deploy = spawn('sh', [path + 'be.sh', 'master', 'sandbox']);
+			deploy = spawn('sh', [path + 'be.sh', 'master', 'sandbox'], { shell: true });
 		}
 
 		// Branch production
 		if (data.ref == 'refs/heads/production') {
 			console.log(`[${repo}] Deploy branch production`);
-			deploy = spawn('sh', [path + 'be.sh', 'production', 'app']);
+			deploy = spawn('sh', [path + 'be.sh', 'production', 'app'], { shell: true });
 		}
 	}
 
@@ -50,28 +50,31 @@ webhookHandler.on('*', (event, repo, data) => {
 		// Branch dev
 		if (data.ref == 'refs/heads/dev') {
 			console.log(`[${repo}] Deploy branch dev`);
-			deploy = spawn('sh', [path + 'fe.sh', 'dev', 'dev']);
+			deploy = spawn('sh', [path + 'fe.sh', 'dev', 'dev'], { shell: true });
 		}
 
 		// Branch production
 		if (data.ref == 'refs/heads/production') {
 			console.log(`[${repo}] Deploy branch production`);
-			deploy = spawn('sh', [path + 'fe.sh', 'production', 'my']);
+			deploy = spawn('sh', [path + 'fe.sh', 'production', 'my'], { shell: true });
 		}
 	}
 
 	if (data.ref) {
+		let buff;
 		deploy.stdout.on('data', data => {
-			const buff = new Buffer(data);
+			buff = new Buffer(data);
 			console.log('[STDOUT]', buff.toString('utf-8'));
 		});
 
 		deploy.stderr.on('data', data => {
-			console.log('[STDERR]', data);
+			buff = new Buffer(data);
+			console.log('[STDERR]', buff.toString('utf-8'));
 		});
 
 		deploy.on('close', data => {
-			console.log('[CLOSE]', data);
+			buff = new Buffer(data);
+			console.log('[CLOSE]', buff.toString('utf-8'));
 		});
 	}
 
