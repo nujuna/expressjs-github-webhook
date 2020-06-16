@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const host = '0.0.0.0';
 const port = 9083;
 const secret = 'secret'; // Secret key of the webhook
+const path = '/home/user/path/';
 
 // Create express app
 const app = express();
@@ -23,7 +24,6 @@ app.get('/', (req, res) => {
 
 webhookHandler.on('*', (event, repo, data) => {
 	
-	const path = '/home/user/path/';
 	let deploy;
 
 	// strapi-franchise
