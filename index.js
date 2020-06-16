@@ -60,18 +60,20 @@ webhookHandler.on('*', (event, repo, data) => {
 		}
 	}
 
-	deploy.stdout.on('data', data => {
-		const buff = new Buffer(data);
-		console.log('[STDOUT]', buff.toString('utf-8'));
-	});
+	if (data.ref) {
+		deploy.stdout.on('data', data => {
+			const buff = new Buffer(data);
+			console.log('[STDOUT]', buff.toString('utf-8'));
+		});
 
-	deploy.stderr.on('data', data => {
-		console.log('[STDERR]', data);
-	});
+		deploy.stderr.on('data', data => {
+			console.log('[STDERR]', data);
+		});
 
-	deploy.on('close', data => {
-		console.log('[CLOSE]', data);
-	});
+		deploy.on('close', data => {
+			console.log('[CLOSE]', data);
+		});
+	}
 
 	console.log(`[${repo}] Done`);
 
