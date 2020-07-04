@@ -13,7 +13,7 @@ git pull origin $BRANCH
 
 npm install
 
-npm run build
+npm run build && npm run post-build
 
 cp -r $HOME/$WORKDIR/$REPONAME/dist/* $HOME/$WORKDIR
 
