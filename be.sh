@@ -16,9 +16,9 @@ yarn build
 
 if [ $WORKDIR = "app" ] 
 then
-	pm2 restart be-production
+	pm2 reload $HOME/pm2/ecosystem.config.js --only be-production
 else
-	pm2 restart be-development
+	pm2 reload $HOME/pm2/ecosystem.config.js --only be-development
 fi
 
 echo "Backend [$BRANCH]:[$HOME/$WORKDIR] (DONE)"
